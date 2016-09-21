@@ -1,0 +1,29 @@
+{
+  "name": "racer-examples",
+  "description": "Example applications for racer",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/derbyjs/racer-examples.git"
+  },
+  "dependencies": {
+    "coffeeify": "^2.0.1",
+    "express": "^4.14.0",
+    "handlebars": "^4.0.5",
+    "racer": "^0.9.0",
+    "racer-browserchannel": "^0.5.0",
+    "racer-bundle": "^0.2.5",
+    "sharedb-mongo": "^1.0.0-beta"
+  },
+  "bugs": {
+    "url": "https://github.com/derbyjs/racer-examples/issues"
+  },
+  "homepage": "https://github.com/derbyjs/racer-examples#readme",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node racer-server.js"
+  },
+  "author": "Nate Smith",
+  "license": "MIT"
+}
