@@ -1,34 +1,3 @@
-// function renderForm(value) {
-//   var form = $.parseHTML(value);
-//   $('#rtc-form')[0].innerHTML = form[0].innerHTML;
-// }
-//
-// model.on('change', function(value, previous, passed) {
-//
-//   console.log("Passed: ");
-//   console.log(passed);
-//
-//   if (!passed.$remote) return;
-//   if (!passed.$type) {
-//     renderForm(value || '');
-//     return;
-//   }
-//   //Update the view on model change
-//   renderForm(value);
-// });
-//
-// function onDOMModification() {
-//   var value = pad.outerHTML;
-//   var previous = model.get() || '';
-//   if (value !== previous)  {
-//     model.set(value);
-//   }
-// }
-//
-// $('#rtc-form')[0].addEventListener('DOMSubtreeModified', function () {
-//   setTimeout(onDOMModification, 0);
-// }, false);
-
 var data = JSON.parse(document.getElementById('data-bundle').innerHTML);
 var MODEL = require('racer').createModel(data);
 window.MODEL = MODEL
@@ -38,58 +7,6 @@ model = MODEL.at('_page.room');
 
 var pad = $('.nicEdit-main');
 
-// model.on('change', function(value, previous, passed) {
-//     if (!passed.$remote) return;
-//     if (!passed.$type) {
-//         pad.value = value || '';
-//         return;
-//     }
-//     var transformCursor, newText;
-//     if (passed.$type === 'stringInsert') {
-//         var index = passed.index;
-//         var text = passed.text;
-//         transformCursor = function(cursor) {
-//             return (index < cursor) ? cursor + text.length : cursor;
-//         };
-//         newText = previous.slice(0, index) + text + previous.slice(index);
-//     } else if (passed.$type === 'stringRemove') {
-//         var index = passed.index;
-//         var howMany = passed.howMany;
-//         transformCursor = function(cursor) {
-//             return (index < cursor) ? Math.max(index, cursor - howMany) : cursor;
-//         };
-//         newText = previous.slice(0, index) + previous.slice(index + howMany);
-//     }
-//     replaceText(pad, newText, transformCursor);
-//     if (pad.value !== model.get()) debugger;
-// });
-//
-// function replaceText(pad, newText, transformCursor) {
-//     var start = pad.selectionStart;
-//     var end = pad.selectionEnd;
-//     var scrollTop = pad.scrollTop;
-//     pad.value = newText;
-//     if (pad.scrollTop !== scrollTop) {
-//         pad.scrollTop = scrollTop;
-//     }
-//
-//     if (document.activeElement === pad) {
-//         pad.selectionStart = transformCursor(start);
-//         pad.selectionEnd = transformCursor(end);
-//     }
-// }
-//
-// function onInput() {
-//     // IE and Opera replace \n with \r\n
-//     var value = pad.value.replace(/\r\n/g, '\n');
-//     var previous = model.get() || '';
-//     if (value != previous) applyChange(model, previous, value);
-//     if (pad.value !== model.get()) debugger;
-// }
-//
-// pad.addEventListener('input', function() {
-//   setTimeout(onInput, 0);
-// }, false);
 var isOwnEvent = false;
 
 function renderForm(value) {

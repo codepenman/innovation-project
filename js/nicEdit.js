@@ -27,20 +27,7 @@ $(document).on('DOMNodeInserted', function(event)  {
 });
 
 $(document).ready(function()    {
-    // $.ajax({
-    //     type: "GET",
-    //     // data: JSON.stringify({
-    //     //     html : document.getElementById('rtc-form').outerHTML
-    //     // }),
-    //     // contentType: 'application/json',
-    //     url: "http://localhost:3000/home/model/contracts",
-    //     success: function(response) {
-    //         console.log(response);
-    //         document.getElementById('data-bundle').innerHTML = JSON.stringify(response);
-    //         window.loadScript();
-    //     }
-    // });
-
+    
 $('#but').draggable({
                 appendTo: '.content', //This is just a higher level DOM element
                 revert: true,
