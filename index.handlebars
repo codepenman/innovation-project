@@ -67,10 +67,10 @@
         function addText(id) {
             var nicE = new nicEditors.findEditor('area');
             var map = {};
-            map["A1"] = "Clause A1 - abc";
+            map["A1"] = "<div align='center'><h1>PURCHASE AND SALE AGREEMENT <BR>BETWEEN<BR>_______________________<BR>AND<BR>________________________<BR></H1>";
             map["A2"] = "Clause A2";
-            map["B1"] = "Clause B1";
-            map["B2"] = "Clause B2";
+            map["B1"] = "<u>Sale of Equipment.</u>  Company hereby sells to Buyer and Buyer hereby purchases from Company the equipment described on <u>Exhibit A</u> attached hereto and incorporated herein, and licenses the software contained therein (hereinafter 'Equipment').  Such Equipment shall be shipped FOB Installation Site (as hereinafter defined in Paragraph 6), freight pre-paid and absorbed by Company.";
+            map["B2"] = "<ul>Sale of Services.</ul> Company hereby sells to Buyer and Buyer hereby purchases from Company the equipment described on <u>Exhibit B</u> attached here";
             console.log("Current Content: ");
             console.log(nicE.getContent());
             nicE.setContent(nicE.getContent() + "<div class='Clause' id='" + id + "'>" + map[id.toString()] + "</div> <br>");
@@ -85,16 +85,16 @@
             <div id="clauses-container" style="width:400px">
                 <h3 style="text-align:center;"><u>Clause Selector</u></h3>
                 <ul class="mktree" id="tree1" >
-                     <li id = "A" href="#" class="liClosed" onClick="expandToItem('tree1','A'); return false;">Clause A 
+                     <li id = "Title" href="#" class="liClosed" onClick="expandToItem('tree1','A'); return false;">Title
                     <ul>
-                        <li id="A1" href="#" onClick="addText('A1')">Clause A1 </li>
-                        <li id="A2" href="#" onClick="addText('A2')">Clause A2</li>
+                        <li id="A1" href="#" onClick="addText('A1')">Main Title</li>
+                        <li id="A2" href="#" onClick="addText('A2')">Sub Title</li>
                     </ul> 
                 </li>
-                     <li id = "B" href="#" class="liClosed" onClick="expandToItem('tree1','B'); return false;">Clause B
+                     <li id = "B" href="#" class="liClosed" onClick="expandToItem('tree1','B'); return false;">Sale
                     <ul>
-                        <li id="B1" href="#" onClick="addText('B1')">Clause B1 </li>
-                        <li id="B2" href="#" onClick="addText('B2')">Clause B2</li>
+                        <li id="B1" href="#" onClick="addText('B1')">Sale of Equipment</li>
+                        <li id="B2" href="#" onClick="addText('B2')">Sale of Services</li>
                     </ul> 
                 </li>
                 </ul>
