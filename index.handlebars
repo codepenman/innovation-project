@@ -76,14 +76,27 @@
             nicE.setContent(nicE.getContent() + "<div class='Clause' id='" + id + "'>" + map[id.toString()] + "</div> <br>");
             $('#editor-container').trigger('onClauseAddition', [{"id" : id}]);
         }
+        (function($) {
+            $.QueryString = (function(a) {
+                if (a == "") return {};
+                var b = {};
+                for (var i = 0; i < a.length; ++i)
+                {
+                    var p=a[i].split('=', 2);
+                    if (p.length != 2) continue;
+                    b[p[0]] = decodeURIComponent(p[1].replace(/\+/g, " "));
+                }
+                return b;
+            })(window.location.search.substr(1).split('&'))
+        })(jQuery);
     </script>
     <header style="text-align:center;">
-        <h1>Real Time Contract Editor</h1>
+        <h1>Real Time Contract Editor - <script>document.write($.QueryString['user'])</script> </h1>
     </header>
     <section>
         <div id="container">
             <div id="clauses-container" style="width:400px">
-                <h3 style="text-align:center;"><u>Clause Selector</u></h3>
+                <h3 style="text-align:center;"><u>Clause Library</u></h3>
                 <ul class="mktree" id="tree1" >
                      <li id = "Title" href="#" class="liClosed" onClick="expandToItem('tree1','A'); return false;">Title
                     <ul>
@@ -105,6 +118,25 @@
                 <!--<button id="but" draggable="true" onclick="getContent()">Get Content</button>-->
             </div>
             <div id="features-container">
+                Enter Chat and press enter
+                <div><input id=input placeholder=you-chat-here /></div>
+
+                Chat Output
+                <div id=box></div>
+
+                <script src='http://cdn.pubnub.com/pubnub.min.js'></script>
+                <script>(function(){
+                    var box = PUBNUB.$('box'), input = PUBNUB.$('input'), channel = 'chat';
+                    PUBNUB.subscribe({
+                        channel  : channel,
+                        callback : function(text) { box.innerHTML = (''+text).replace( /[<>]/g, '' ) + '<br>' + box.innerHTML }
+                    });
+                    PUBNUB.bind( 'keyup', input, function(e) {
+                        (e.keyCode || e.charCode) === 13 && PUBNUB.publish({
+                            channel : channel, message :  $.QueryString['user'] + ' : ' + input.value, x : (input.value='')
+                        })
+                    } )
+                })()</script>
                 <div class="chat-container">
                     <div class="row chat-window" id="chat_window_1">
                         <div class="col-xs-12 col-md-12">
