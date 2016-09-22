@@ -29,10 +29,11 @@ app.io           = io;
 // socket.io events
 io.on("connection", function(socket)
 {
-  console.log( "A user connected" );
+  console.log("Connection from Socket Id " + socket.id);
+  bot.findOrCreateSession(socket.id, socket);
   socket.on('chat', function (data) {
     console.log("Server - " + data);
-    console.log("Socket Id " + socket.id);
+    console.log("Chat From Socket Id " + socket.id);
     bot.handleMessage(socket, data);
   });
 });
@@ -117,15 +118,36 @@ var modelTemplate = fs.readFileSync(__dirname + '/model.handlebars', 'utf-8');
 var renderModel = handlebars.compile(modelTemplate);
 
 app.post('/:roomId/clauseAdded', function(req, res, next) {
-  var model = req.model;
-  var $room = model.at('rooms.' + req.params.roomId);
-  var content = $room.at('content');
-  console.log('Content: ');
-  console.log(content);
-  console.log("Clause Number: " + req.body.clause_number);
-  console.log("Socket: ");
-  console.log(req.body.socket);
-  console.log(req);
+  var socket = "/#" + req.body.socketId;
+  var clause_number = req.body.clause_number;
+  var model = req.body.model;
+  var message = "Clause " + clause_number + " is added.";
+
+  console.log(socket);
+  console.log(clause_number);
+  console.log(model.clauses);
+  bot.initiateInteraction(socket, message, model.clauses);
+
+  // var model = req.model;
+  // var $room = model.at('rooms.' + req.params.roomId);
+  // model.ref('_page.room', $room.at('content'));
+  // var content = $room.at('content');
+  // console.log('Content: ');
+  // console.log($room.get('content'));
+  // console.log("*****")
+  // console.log(model.get());
+  // console.log("Clause Number: " + req.body.clause_number);
+  // $room.subscribe(function (err) {
+  //   if (err) return next(err);
+  //   var room = $room.get();
+  //
+  //   // Reference the current room's content for ease of use
+  //   model.ref('_page.room', $room.at('content'));
+  //   console.log('Content Inside Subscribe: ');
+  //   console.log($room.get('content'));
+  //   console.log("**************")
+  //   console.log(model.get());
+  // });
 });
 
 app.get('/home/model/:roomId', function (req, res, next) {
@@ -139,6 +161,7 @@ app.get('/home/model/:roomId', function (req, res, next) {
   $room.subscribe(function (err) {
     // If the room doesn't exist yet, we need to create it
     $room.createNull({content: ''});
+    console.log("Room with model created...");
     // Reference the current room's content for ease of use
     model.ref('_page.room', $room.at('content'));
 
@@ -168,12 +191,15 @@ app.get('/:roomId', function(req, res, next) {
     var room = $room.get();
     // If the room doesn't exist yet, we need to create it
     $room.createNull({content: ''});
+    console.log("Room Created...")
     // Reference the current room's content for ease of use
     model.ref('_page.room', $room.at('content'));
     var html = renderIndex({
       room: $room.get('id'),
       text: $room.get('content')
     });
+    console.log("***");
+    console.log("html");
     model.bundle(function(err, bundle) {
       if (err) return next(err);
       var bundleJson = stringifyBundle(bundle);

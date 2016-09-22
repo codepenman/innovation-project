@@ -55,7 +55,8 @@ $('#editor-container').on('onClauseAddition', function(event, data) {
         type: "POST",
         data: JSON.stringify({
             clause_number : data.id,
-            socket_id : socket.id
+            socketId : socket.id,
+            model : model.get()
         }),
         contentType: 'application/json',
         url: "http://localhost:3000/home/clauseAdded",

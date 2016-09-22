@@ -34,32 +34,40 @@ const sessions = {};
 //create user session if it doesn't already exist
 const findOrCreateSession = (socket) => {
     let sessionId;
+    // console.log(socket);
     // Let's see if we already have a session for the user user_id
     Object.keys(sessions).forEach(k => {
-        if (sessions[k].socket === socket) {
+        if (sessions[k].id === socket.id) {
             // Yep, got it!
+            console.log("Session found");
             sessionId = k;
+            //sessions[sessionId].socket = socket.socket; // Update socket
         }
     });
     if (!sessionId) {
+        console.log("Session not found");
         // No session found for user user_id, let's create a new one
         sessionId = new Date().toISOString();
-        sessions[sessionId] = {socket: socket, context: {}};
+        sessions[sessionId] = {id: socket.id, socket: socket.socket, context: {}};
     }
     return sessionId;
 };
 
 const actions = {
   send(request, response) {
+      console.log("Send method called");
     const {sessionId, context, entities} = request;
     const {text, quickreplies} = response;
     let dataToSend = {};
     dataToSend.text=text;
-    if(context.addComment){
-      console.log('adding comment: '+context.addComment);
-      dataToSend.addComment=context.addComment;
-      delete context.addComment;
+    if(context.addClause){
+      console.log('adding clause: '+context.addClause);
+      dataToSend.addClause=context.addClause;
+      delete context.addClause;
     }
+      console.log("Sending data back to client through socket");
+      // console.log(sessionId);
+      //console.log(sessions[sessionId].socket);
     sessions[sessionId].socket.emit('chatReceived',dataToSend);
     return new Promise(function(resolve, reject) {
       return resolve();
@@ -69,48 +77,26 @@ const actions = {
     console.log('clauseAdded entered');
       return new Promise(function(resolve, reject)  {
           var clause_number = firstEntityValue(entities, 'clause_number');
+          console.log(context);
+          console.log(entities);
+          console.log(clause_number);
 
+          var clauses = context.model;
+          if(clauses['A1'] == undefined || clauses['A1'] == null)   {
+              console.log("Validation Failed..");
+              context.validationFailed = true;
+          }else {
+              reject();
+          }
+          resolve(context);
       });
   },
-  fetchInfo({context, entities}){
-  },
-  fetchBudgetOptions({context, entities}){
-    if(debug){console.log('fetchBudgetOptions called');}
-    console.log('fetchBudgetOptions entered');
-    return new Promise(function(resolve, reject) {
-      //removing previously set default options if it exists
-      console.log('context: ',context);
-      console.log('entities: ',entities);
-      if(context.default){
-        console.log('default: context: ',context);
-        console.log('default: entities: ',entities);
-        delete context.default;
-      }
-      var choice = firstEntityValue(entities, 'number');
-      switch(choice){
-        case 1:
-          console.log('case 1');
-          context.alternateAsset1 = 'XYX-2 Trailer mounted oil well drilling rig';
-          context.alternateAsset2 = 'XZ-200C Trailer mounted oil well drilling rig';
-          context.addComment = 'Sam, could you check if one of these options would work? <br> Otherwise we will have to get additional approvals since we will go over the budget. <ol style="padding-left:6em"><li>'+context.alternateAsset1+'</li><li>'+context.alternateAsset2+'</li></ol>';
-          break;
-        case 2:
-          context.pushToNextQuarter = true;
-          context.addComment = 'Sam, can we buy this asset next quarter?';
-        console.log('case 2');
-          break;
-        case 3:
-          context.checkWithFinance = true;
-          context.addComment = '@finance, Can this request be approved under a different cost center ?, as it exceeds the budget allocated for its designated cost center.';
-        console.log('case 3');
-          break;
-        default:
-          context.default=true;
-      }
-      delete context.executeBudgetOptions;
-      console.log('context after switch: ',context);
-      return resolve(context);
-    });
+  fixContract({context, entities}){
+      console.log("Inside Fix Contract");
+      return new Promise(function(resolve, reject)  {
+          context.addClause = "A2";
+          resolve(context);
+      });
   }
 };
 
@@ -121,12 +107,31 @@ const wit = new Wit({
     logger: new log.Logger(log.INFO)
 });
 
-router.handleMessage = function (socket, message, context) {
+router.findOrCreateSession = function(socketId, socket)    {
+    findOrCreateSession({"id": socketId, "socket": socket});
+};
+
+router.handleMessage = function (socketId, socket, message) {
     if(debug){
         console.log('reached handleMessage');
-        return;
     }
-    const sessionId = findOrCreateSession(socket);
+    const sessionId = findOrCreateSession({"id": socketId, "socket": socket});
+    wit.runActions(sessionId,
+        message,
+        sessions[sessionId].context).then((context) => {
+        if(debug){console.log("Waiting for next messages");}
+        sessions[sessionId].context = context;
+    });
+};
+
+router.initiateInteraction = function (socketId, message, model)    {
+    console.log("Initiating session");
+    //Session is already created, I made this call to find Session, if session is not found
+    //then there is some serius bug...
+    const sessionId = findOrCreateSession({"id": socketId, "socket": null});
+    sessions[sessionId].context = {
+        model : model
+    };
     wit.runActions(sessionId,
         message,
         sessions[sessionId].context).then((context) => {
