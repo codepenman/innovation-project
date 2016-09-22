@@ -67,10 +67,20 @@
         function addText(id) {
             var nicE = new nicEditors.findEditor('area');
             var map = {};
-            map["A1"] = "<div align='center'><h1>PURCHASE AND SALE AGREEMENT <BR>BETWEEN<BR>_______________________<BR>AND<BR>________________________<BR></H1>";
-            map["A2"] = "Clause A2";
-            map["B1"] = "<u>Sale of Equipment.</u>  Company hereby sells to Buyer and Buyer hereby purchases from Company the equipment described on <u>Exhibit A</u> attached hereto and incorporated herein, and licenses the software contained therein (hereinafter 'Equipment').  Such Equipment shall be shipped FOB Installation Site (as hereinafter defined in Paragraph 6), freight pre-paid and absorbed by Company.";
-            map["B2"] = "<ul>Sale of Services.</ul> Company hereby sells to Buyer and Buyer hereby purchases from Company the equipment described on <u>Exhibit B</u> attached here";
+            map["mainTitle"] = "<div align='center'><h1>PURCHASE AND SALE AGREEMENT <BR>BETWEEN<BR>_______________________<BR>AND<BR>________________________<BR></h1></div>";
+            map["A2"] = "<div><b>THIS PURCHASE AND SALE AGREEMENT </b>is entered into this ___________________ day of ___________________ , 200_, by and between ____________________ (hereinafter 'Buyer'), a not-for-profit Maryland corporation, 600 North Wolfe Street, Baltimore, Maryland, 21287, and _________________________ (hereinafter 'Company'), a ________________ corporation, _____________________________________.</div>";
+            map["recitals"] = "<div align='center'><b>Recitals</b><br><br><b>WHEREAS,</b> Company is in the business of selling and servicing __________  equipment; and<br><br><b>WHEREAS,</b> Buyer desires to purchase such equipment.<br><br><b>NOW, THEREFORE, </b>in consideration of the mutual agreements and covenants contained therein and for other good and valuable consideration, the receipt and sufficiency of which hereby are acknowledged, it is mutually agreed and covenanted by and between the parties to this Agreement, under seal, as follows:</div>";
+            map["saleOfEquipment"] = "&nbsp;&nbsp;<u><b>Sale of Equipment.</b></u>  Company hereby sells to Buyer and Buyer hereby purchases from Company the equipment described on <u>Exhibit A</u> attached hereto and incorporated herein, and licenses the software contained therein (hereinafter 'Equipment').  Such Equipment shall be shipped FOB Installation Site (as hereinafter defined in Paragraph 6), freight pre-paid and absorbed by Company.";
+            map["purchasePrice"] = "&nbsp;&nbsp;<u><b>Purchase Price.</b></u> Buyer shall pay to Company for the Equipment and for all obligations specified herein, as full and complete consideration therefore, the sum of __________________ ($__________) (hereinafter 'Purchase Price').";
+            map["payment"] = "&nbsp;&nbsp;<u><b>Payment.</b></u> Payment of the Purchase Price shall be made by Buyer to Company in accordance with the following schedule:";
+            map["paymentClauseA"] = map["payment"] +"<br><br>"+ "&nbsp;&nbsp;&nbsp;&nbsp;<b>A. </b>Ten Percent (10%) of the Purchase Price within thirty (30) days after the execution of this Agreement;"
+            map["paymentClauseB"] = "&nbsp;&nbsp;&nbsp;&nbsp;<b>B. </b>Eighty Percent (80%) of the Purchase Price within thirty (30) days after Delivery of the Equipment (as defined in Paragraph 7 of the Agreement); and";
+            map["paymentClauseC"] = "&nbsp;&nbsp;&nbsp;&nbsp;<b>C. </b>Ten Percent (10%) of the Purchase Price within thirty (30) days after Buyer's Acceptance of the Equipment.<br><br>In the event that Buyer does not accept the Equipment, Company shall refund all prior payments within fifteen (15) days of receipt of notification from Buyer that it does not accept the Equipment.";
+            map["taxes"] = "&nbsp;&nbsp;<u><b>Taxes.</b></u> Buyer represents that it is a tax-exempt corporation under Section 501(c)(3) of the Internal Revenue Code of the United States, as amended, and under applicable laws of the State of Maryland.  The State of Maryland tax-exempt number for Buyer is ________________.  Company shall take all action required to cause the purchase of the Equipment hereunder to be treated as a tax-exempt transaction, and in no event shall Buyer be responsible for any sales, use, property, gross receipts, or similar taxes levied against any party to this Agreement.";
+            map["siteEvaluation"] = "&nbsp;&nbsp;<u><b>Site Evaluation.</b></u> At no cost or expense to Buyer, Company shall furnish Buyer with site preparation studies, which shall include, but not be limited to, power, air conditioning, and operational considerations with respect to the Equipment.  Company's personnel shall coordinate their activities with and avoid interference with Buyer's employees and construction contractors working to prepare the Installation Site (as hereinafter defined) for receipt of the Equipment.  A pre-installation instruction manual will be provided to Buyer by Company upon request.";
+            map["sitePreparation"] = "&nbsp;&nbsp;<u><b>Site Preparation.</b></u> Buyer shall be responsible for preparing a site suitable for the installation and operation of the Equipment (hereinafter 'Installation Site').";
+            map["delivery"] = "&nbsp;&nbsp;<u><b>Delivery.</b></u> Delivery of the Equipment to Buyer by Company, at Company's sole cost and expense, shall be made within two (2) weeks after receipt of a purchase order (hereinafter 'Delivery Date').  The Equipment shall be packaged appropriately and all cartons shall be clearly stamped with Buyer's Purchase Order Number.  Buyer must be able to identify easily all items of the Equipment contained within each carton.  Delivery of the Equipment in an undamaged condition to Buyer's Installation Site shall constitute 'Delivery' to Buyer.  Risk of loss during transit shall remain with Company. <br><br>A packing slip indicating each item and item quantity shipped shall accompany every shipment.  The packing list shall be attached to the exterior of one of the containers in each shipment in a conspicuous manner.";
+            map["forceMajeure"] = "&nbsp;&nbsp;<u><b>Force Majeure.</b></u> Neither party will be considered in default of the agreement (except for the obligation to make any payment when due), to the extent that any such breach results from, or is made impracticable by, any cause beyond its reasonable control, such as acts of God, war, fires, explosions, natural disasters, sabotage, critical equipment failure, and governemental laws and regulations (a “Force Majeure Event”). The party whose performance is affected by a Force Majeure Event shall (i) give prompt notice to the other party stating the details and the full particulars in connection therewith and the expected duration of the event and (ii) shall take commercially reasonable steps to resume performance promptly. If the Force Majeure Event continues for more than ninety (90) days, the party not affected shall have the option to terminate the agreement upon notice to the other party.";
             console.log("Current Content: ");
             console.log(nicE.getContent());
             nicE.setContent(nicE.getContent() + "<div class='Clause' id='" + id + "'>" + map[id.toString()] + "</div> <br>");
@@ -91,25 +101,52 @@
         })(jQuery);
     </script>
     <header style="text-align:center;">
-        <h1>Real Time Contract Editor - <script>document.write($.QueryString['user'])</script> </h1>
+        <h1>MakeContractAuthoringAwesome</h1>
+        <h2>Welcome <script>document.write($.QueryString['user'])</script> </h2>
     </header>
     <section>
         <div id="container">
             <div id="clauses-container" style="width:400px">
                 <h3 style="text-align:center;"><u>Clause Library</u></h3>
                 <ul class="mktree" id="tree1" >
-                     <li id = "Title" href="#" class="liClosed" onClick="expandToItem('tree1','A'); return false;">Title
+                     <li id = "title" href="#" class="liClosed" onClick="expandToItem('tree1','title'); return false;">Title
                     <ul>
-                        <li id="A1" href="#" onClick="addText('A1')">Main Title</li>
+                        <li id="mainTitle" href="#" onClick="addText('mainTitle')">Main Title</li>
                         <li id="A2" href="#" onClick="addText('A2')">Sub Title</li>
+                        <li id="recitals" href="#" onClick="addText('recitals')">Recitals</li>
                     </ul> 
                 </li>
-                     <li id = "B" href="#" class="liClosed" onClick="expandToItem('tree1','B'); return false;">Sale
+                     <li id = "sale" href="#" class="liClosed" onClick="expandToItem('tree1','sale'); return false;">Sale
                     <ul>
-                        <li id="B1" href="#" onClick="addText('B1')">Sale of Equipment</li>
-                        <li id="B2" href="#" onClick="addText('B2')">Sale of Services</li>
+                        <li id="saleOfEquipment" href="#" onClick="addText('saleOfEquipment')">Sale of Equipment</li>
+                        <li id="purchasePrice" href="#" onClick="addText('purchasePrice')">Purchase Price</li>
+                        <li id="payment" href="#" class="liClosed" onClick="expandToItem('tree1','payment');">Payment
+                            <ul>
+                                <li id="paymentClauseA" href="#" onClick="addText('paymentClauseA')">Payment Clause A</li>
+                                <li id="paymentClauseB" href="#" onClick="addText('paymentClauseB')">Payment Clause B</li>
+                                <li id="paymentClauseC" href="#" onClick="addText('paymentClauseC')">Payment Clause C</li>
+                                <li id="taxes" href="#" onClick="addText('taxes')">Taxes</li>
+                                <li id="siteEvaluation" href="#" onClick="addText('siteEvaluation')">Site Evaluation</li>
+                                <li id="sitePreparation" href="#" onClick="addText('sitePreparation')">Site Preparation</li>
+                                <li id="delivery" href="#" onClick="addText('delivery')">Delivery</li>
+                            </ul>
+                        </li>
                     </ul> 
-                </li>
+                </li><br>
+                    <li id = "country" href="#" class="liClosed" onClick="expandToItem('tree1','country')">Country
+                        <ul>
+                            <li id="france" href="#" class="liClosed" onClick="expandToItem('tree1','france');">France
+                                <ul>
+                                    <li id="forceMajeure" href="#" onClick="addText('forceMajeure')">Force Majeure
+                                    </li>
+                                </ul>
+                            </li>
+                            <li id="germany" href="#" onClick="addText('germany')">Germany</li>
+                            <li id="india" href="#" onClick="addText('india')">India</li>
+                            <li id="us" href="#" onClick="addText('us')">United States</li>
+                            <li id="uk" href="#" onClick="addText('uk')">United Kingdom</li>
+                        </ul>
+                    </li>
                 </ul>
             </div>
             <div id="editor-container" ondrop="dropped(event)">
@@ -118,7 +155,7 @@
                 <!--<button id="but" draggable="true" onclick="getContent()">Get Content</button>-->
             </div>
             <div id="features-container">
-                Enter Chat and press enter
+                Enter your message and press enter
                 <div><input id=input placeholder=you-chat-here /></div>
 
                 Chat Output
@@ -126,7 +163,7 @@
 
                 <script src='http://cdn.pubnub.com/pubnub.min.js'></script>
                 <script>(function(){
-                    var box = PUBNUB.$('box'), input = PUBNUB.$('input'), channel = 'chat';
+                    var box = PUBNUB.$('box'), input = PUBNUB.$('input'), channel = 'innovation-chat';
                     PUBNUB.subscribe({
                         channel  : channel,
                         callback : function(text) { box.innerHTML = (''+text).replace( /[<>]/g, '' ) + '<br>' + box.innerHTML }

@@ -15,7 +15,7 @@ var log = require('node-wit').log;
 
 var dependencies = {};
 
-const WIT_TOKEN = 'J6XN5MMXRQXBDAQW7MF4F3ZCZDU2FQY6';//'POSPQ54KA5V6KJNF56VR4UXWVPPKUEFA';
+const WIT_TOKEN = 'POSPQ54KA5V6KJNF56VR4UXWVPPKUEFA'; //'J6XN5MMXRQXBDAQW7MF4F3ZCZDU2FQY6';//'POSPQ54KA5V6KJNF56VR4UXWVPPKUEFA';
 const REST_API_URL = 'http://localhost:3000'; //mocked using simple-json server
 const firstEntityValue = (entities, entity) => {
     const val = entities && entities[entity] &&

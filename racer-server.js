@@ -34,7 +34,7 @@ io.on("connection", function(socket)
   socket.on('chat', function (data) {
     console.log("Server - " + data);
     console.log("Chat From Socket Id " + socket.id);
-    bot.handleMessage(socket, data);
+    bot.handleMessage(socket.id, data);
   });
 });
 
