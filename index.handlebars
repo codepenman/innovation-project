@@ -5,6 +5,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
     <link href="https://code.jquery.com/ui/1.11.1/themes/ui-darkness/jquery-ui.css" rel="stylesheet"/>
     <script src="https://code.jquery.com/ui/1.11.1/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="http://www.javascripttoolbox.com/libsource.php/mktree/source/mktree.js"></script>
+    <link rel="stylesheet" href="http://www.javascripttoolbox.com/lib/mktree/mktree.css" type="text/css">
     <style>
         body, html{
             width:100%;
@@ -60,22 +62,49 @@
 <body>
     <script>
         bkLib.onDomLoaded(function() {
-            new nicEditor({
+            window.nicEdit = new nicEditor({
                 maxHeight : 500,
                 fullPanel : true
             }).panelInstance('area');
         });
+
+        function addText(id) {
+            var nicE = new nicEditors.findEditor('area');
+            var map = {};
+            map["A1"] = "Clause A1 - abc";
+            map["A2"] = "Clause A2";
+            map["B1"] = "Clause B1";
+            map["B2"] = "Clause B2";
+            console.log("Current Content: ");
+            console.log(nicE.getContent());
+            nicE.setContent(nicE.getContent() + "<div class='Clause' id='" + id + "'>" + map[id.toString()] + "</div> <br>");
+            $('#editor-container').trigger('onClauseAddition');
+        }
     </script>
     <header style="text-align:center;">
         <h1>Real Time Contract Editor</h1>
     </header>
     <section>
         <div id="container">
-            <div id="clauses-container">
+            <div id="clauses-container" style="width:400px">
+
+                <ul class="mktree" id="tree1" >
+                     <li id = "A" href="#" class="liClosed" onClick="expandToItem('tree1','A'); return false;">Clause A 
+                    <ul>
+                        <li id="A1" href="#" onClick="addText('A1')">Clause A1 </li>
+                        <li id="A2" href="#" onClick="addText('A2')">Clause A2</li>
+                    </ul> 
+                </li>
+                     <li id = "B" href="#" class="liClosed" onClick="expandToItem('tree1','B'); return false;">Clause B
+                    <ul>
+                        <li id="B1" href="#" onClick="addText('B1')">Clause B1 </li>
+                        <li id="B2" href="#" onClick="addText('B2')">Clause B2</li>
+                    </ul> 
+                </li>
+                </ul>
             </div>
             <div id="editor-container" ondrop="dropped(event)">
                 <textarea id="area" ondrop="dropped(event)" ondragover="return false" style="height:550px" cols="125">
-                    Some Initial Content was in this textarea
                 </textarea>
                 <button id="but" draggable="true" onclick="getContent()">Get Content</button>
             </div>

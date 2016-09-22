@@ -4,6 +4,9 @@ var express = require('express');
 var handlebars = require('handlebars');
 var racerBrowserChannel = require('racer-browserchannel');
 var racer = require('racer');
+var socket_io    = require( "socket.io" );
+var bot = require('./js/bot');
+
 racer.use(require('racer-bundle'));
 
 var backend = racer.createBackend();
@@ -12,6 +15,20 @@ app = express();
 app
   .use(racerBrowserChannel(backend))
   .use(backend.modelMiddleware());
+
+// Socket.io
+var io           = socket_io();
+app.io           = io;
+
+// socket.io events
+io.on("connection", function(socket)
+{
+  console.log( "A user connected" );
+  socket.on('chat', function (data) {
+    console.log("Server - " + data);
+    bot.handleMessage(socket, data);
+  });
+});
 
 app.use(function(err, req, res, next) {
   console.error(err.stack || (new Error(err)).stack);
@@ -140,6 +157,11 @@ app.get('/', function(req, res) {
 });
 
 var port = process.env.PORT || 3000;
-http.createServer(app).listen(port, function() {
+
+var server = http.createServer(app);
+
+server.listen(port, function() {
   console.log('Go to http://localhost:' + port);
 });
+
+io.attach( server );
