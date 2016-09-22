@@ -34,7 +34,7 @@ model.on('change', function(value, previous, passed) {
     renderForm(value);
 });
 
-$('#editor-container').on('onClauseAddition', function() {
+$('#editor-container').on('onClauseAddition', function(event, data) {
     console.log("Hello.... racer-client");
     var clauses = [];
     var content = {};
@@ -49,4 +49,18 @@ $('#editor-container').on('onClauseAddition', function() {
     });
     console.log("Model: ");
     console.log(model.get());
+    // var action = "Clause " + id + " is added.";
+    // socket.emit('chat', action);
+    $.ajax({
+        type: "POST",
+        data: JSON.stringify({
+            clause_number : data.id,
+            socket_id : socket.id
+        }),
+        contentType: 'application/json',
+        url: "http://localhost:3000/home/clauseAdded",
+        success: function(response) {
+            //DO nothing on Success
+        }
+    });
 });

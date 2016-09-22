@@ -8,6 +8,8 @@ var socket_io    = require( "socket.io" );
 var bot = require('./js/bot');
 
 racer.use(require('racer-bundle'));
+// Put this statement near the top of your module
+var bodyParser = require('body-parser');
 
 var backend = racer.createBackend();
 
@@ -15,6 +17,10 @@ app = express();
 app
   .use(racerBrowserChannel(backend))
   .use(backend.modelMiddleware());
+
+// Put these statements before you define any routes.
+app.use(bodyParser.urlencoded());
+app.use(bodyParser.json());
 
 // Socket.io
 var io           = socket_io();
@@ -26,6 +32,7 @@ io.on("connection", function(socket)
   console.log( "A user connected" );
   socket.on('chat', function (data) {
     console.log("Server - " + data);
+    console.log("Socket Id " + socket.id);
     bot.handleMessage(socket, data);
   });
 });
@@ -72,12 +79,34 @@ app.get('/nicEdit.js', function(req, res, next) {
   });
 });
 
-app.get('/nicEdit.css', function(req, res, next) {
-  backend.bundle(__dirname + '/js/nicEdit.js', function(err, js) {
-    if (err) return next(err);
-    res.type('js');
-    res.send(js);
+app.get('/style.css', function(req, res, next) {
+  fs.readFile(__dirname + '/style.css', function (err, data) {
+    if (err) return send404(res);
+    res.writeHead(200, { 'Content-Type': 'text/css' });
+    res.end(data, 'utf-8');
+    res.end();
   });
+});
+
+app.get('/underscore-min.js', function(req, res, next) {
+  fs.readFile(__dirname + '/underscore-min.js', function (err, data) {
+    if (err) return send404(res);
+    res.writeHead(200, { 'Content-Type': 'text/javascript' });
+    res.end(data, 'utf-8');
+    res.end();
+  });
+});
+
+app.get('/bot.png', function(req, res, next) {
+  var img = fs.readFileSync(__dirname + '/media/bot.png');
+  res.writeHead(200, {'Content-Type': 'image/png' });
+  res.end(img, 'binary');
+});
+
+app.get('/user.png', function(req, res, next) {
+    var img = fs.readFileSync(__dirname + '/media/user.png');
+    res.writeHead(200, {'Content-Type': 'image/png' });
+    res.end(img, 'binary');
 });
 
 var indexTemplate = fs.readFileSync(__dirname + '/index.handlebars', 'utf-8');
@@ -86,6 +115,18 @@ var scriptsTemplate = fs.readFileSync(__dirname + '/scripts.handlebars', 'utf-8'
 var renderScripts = handlebars.compile(scriptsTemplate);
 var modelTemplate = fs.readFileSync(__dirname + '/model.handlebars', 'utf-8');
 var renderModel = handlebars.compile(modelTemplate);
+
+app.post('/:roomId/clauseAdded', function(req, res, next) {
+  var model = req.model;
+  var $room = model.at('rooms.' + req.params.roomId);
+  var content = $room.at('content');
+  console.log('Content: ');
+  console.log(content);
+  console.log("Clause Number: " + req.body.clause_number);
+  console.log("Socket: ");
+  console.log(req.body.socket);
+  console.log(req);
+});
 
 app.get('/home/model/:roomId', function (req, res, next) {
   var model = req.model;
